@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Weekly Timecard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hover.css/2.3.1/css/hover-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <div class="container mx-auto p-4">
+        <header class="bg-blue-500 text-white p-4 rounded-lg shadow-md">
+            <h1 class="text-2xl">Employee Weekly Timecard</h1>
+        </header>
+        
+        <main class="my-8">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl mb-4">Current Week Timecard</h2>
+                <p id="currentDate" class="text-lg mb-4"></p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="timecardContainer"></div>
+
+                <div class="flex justify-between mt-4">
+                    <button id="prevWeekBtn" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded transition-colors duration-300">
+                        <i class="fas fa-chevron-left mr-2"></i> Previous Week
+                    </button>
+                    <button id="nextWeekBtn" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded transition-colors duration-300">
+                        Next Week <i class="fas fa-chevron-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="my-8 p-6 bg-white rounded-lg shadow-lg">
+                <h2 class="text-xl mb-4">Leave Types Information</h2>
+                <p class="text-gray-600">Click on each day to select a leave type.</p>
+            </div>
+        </main>
+
+        <footer class="bg-blue-500 text-white p-4 rounded-lg shadow-md mt-8">
+            <p>&copy; 2024 Employee Timecard System</p>
+        </footer>
+    </div>
+
+    <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+    <script>
+        // Define leave types
+        const leaveTypes = ['Sick Leave', 'Vacation', 'Personal Leave', 'Emergency Leave', 'Work From Home'];
+
+        // Function to create a new week timecard
+        function createWeekTimecard(weekIndex) {
+            const weekLabel = `Week ${weekIndex}`;
+
+            const weekTimecard = document.createElement('div');
+            weekTimecard.id = `week${weekIndex}-Timecard`;
+            weekTimecard.className = 'bg-white p-4 rounded-lg shadow-lg';
+
+            const weekTitle = document.createElement('h2');
+            weekTitle.className = 'text-xl mb-4';
+            weekTitle.textContent = `${weekLabel}`;
+            weekTimecard.appendChild(weekTitle);
+
+            const currentDate = new Date();
+            currentDate.setDate(currentDate.getDate() + (weekIndex - 1) * 7); // Adjust date for the current week
+            const currentDateString = currentDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const currentDateParagraph = document.getElementById('currentDate');
+            currentDateParagraph.textContent = `Current Date: ${currentDateString}`;
+
+            const table = document.createElement('table');
+            table.className = 'min-w-full bg-white mb-4';
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+
+            // Create header row
+            const headerRow = document.createElement('tr');
+            const headers = ['Day', 'Day of Week', 'Leave Type'];
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.className = 'border px-4 py-2 text-left';
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Create rows for each day of the week
+            for (let i = 0; i < 7; i++) {
+                const dayLabel = `Day ${i + 1}`;
+                const dayOfWeek = currentDate.toLocaleDateString('en-US', { weekday: 'long' });
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-200 transition-colors';
+
+                const tdDay = document.createElement('td');
+                tdDay.className = 'border px-4 py-2 cursor-pointer hover:bg-gray-200 transition-colors';
+                tdDay.textContent = dayLabel;
+                tr.appendChild(tdDay);
+
+                const tdWeekDay = document.createElement('td');
+                tdWeekDay.className = 'border px-4 py-2';
+                tdWeekDay.textContent = dayOfWeek;
+                tr.appendChild(tdWeekDay);
+
+                const tdLeaveType = document.createElement('td');
+                tdLeaveType.className = 'border px-4 py-2';
+                const selectLeaveType = document.createElement('select');
+                selectLeaveType.className = 'w-full';
+                leaveTypes.forEach(type => {
+                    const option = document.createElement('option');
+                    option.textContent = type;
+                    selectLeaveType.appendChild(option);
+                });
+                selectLeaveType.addEventListener('change', function() {
+                    tdLeaveType.textContent = selectLeaveType.value;
+                });
+                tdLeaveType.appendChild(selectLeaveType);
+                tr.appendChild(tdLeaveType);
+
+                tbody.appendChild(tr);
+
+                currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+            }
+
+            table.appendChild(tbody);
+            weekTimecard.appendChild(table);
+
+            return weekTimecard;
+        }
+
+        // Function to update the current week timecard
+        function updateWeekTimecard(weekIndex) {
+            const timecardContainer = document.getElementById('timecardContainer');
+            timecardContainer.innerHTML = '';
+
+            for (let i = 0; i < 4; i++) {
+                const weekTimecard = createWeekTimecard(weekIndex + i);
+                timecardContainer.appendChild(weekTimecard);
+            }
+        }
+
+        // Event listeners for navigation buttons
+        document.getElementById('prevWeekBtn').addEventListener('click', function() {
+            if (currentWeekIndex > 1) {
+                currentWeekIndex--;
+                updateWeekTimecard(currentWeekIndex);
+            }
+        });
+
+        document.getElementById('nextWeekBtn').addEventListener('click', function() {
+            currentWeekIndex++;
+            updateWeekTimecard(currentWeekIndex);
+        });
+
+        // Initial display of the current week timecard
+        let currentWeekIndex = 1;
+        updateWeekTimecard(currentWeekIndex);
+
+        // Initialize Select2 for leave type selection
+        $(document).ready(function() {
+            $('.select-leave-type').select2();
+        });
+    </script>
+</body>
+</html>

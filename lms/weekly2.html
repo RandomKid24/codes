@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Timecard System</title>
+    <!-- Ionic Framework (for modal) -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 20px;
+        }
+        .header, .footer {
+            height: 60px;
+            background-color: #4a90e2;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-radius: 8px 8px 0 0;
+        }
+        .table-container {
+            display: grid;
+            grid-template-columns: 120px repeat(7, 1fr);
+            gap: 2px;
+            border-top: 1px solid #ccc;
+            margin-top: 20px;
+        }
+        .table-header, .table-cell {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            border-right: 1px solid #ccc;
+            transition: background-color 0.3s ease;
+        }
+        .table-header.day-label {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+        .table-cell.highlight {
+            background-color: #a0d8ff;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: #000;
+        }
+        .button {
+            display: inline-block;
+            background-color: #4a90e2;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #357ed8;
+        }
+        .timecard-section {
+            margin-top: 40px;
+        }
+        .timecard {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .timecard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .timecard-header h2 {
+            font-size: 18px;
+            margin: 0;
+        }
+        .generate-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .generate-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="text-xl">Employee Timecard System</h1>
+            <a href="#" class="button ml-auto">Manage Users</a>
+        </div>
+        <div class="table-container">
+            <div class="table-header day-label">DAY</div>
+            <div class="table-header">Monday</div>
+            <div class="table-header">Tuesday</div>
+            <div class="table-header">Wednesday</div>
+            <div class="table-header">Thursday</div>
+            <div class="table-header">Friday</div>
+            <div class="table-header">Saturday</div>
+            <div class="table-header">Sunday</div>
+
+            <!-- Example: Week 1 -->
+            <div class="table-cell day-label">WEEK 1</div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+
+            <!-- Example: Week 2 -->
+            <div class="table-cell day-label">WEEK 2</div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+
+            <!-- Example: Week 3 -->
+            <div class="table-cell day-label">WEEK 3</div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+
+            <!-- Example: Week 4 -->
+            <div class="table-cell day-label">WEEK 4</div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+            <div class="table-cell" onclick="openModal(this)"> </div>
+        </div>
+
+        <!-- Timecard Section -->
+        <div class="timecard-section">
+            <h2 class="text-xl mb-4">Previous Timecards</h2>
+
+            <div id="timecardsContainer">
+                <!-- Timecards will be dynamically added here -->
+            </div>
+
+            <button class="generate-button" onclick="generateNewTimecard()">Generate New Timecard</button>
+        </div>
+    </div>
+
+    <!-- Leave Modal -->
+    <div id="leaveModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Select Leave Type</h2>
+            <select id="leaveType" onchange="selectLeaveType()">
+                <option value="None">None</option>
+                <option value="Full Day">Full Day</option>
+                <option value="Half Day">Half Day</option>
+                <option value="Sick Leave">Sick Leave</option>
+                <option value="Casual Leave">Casual Leave</option>
+            </select>
+        </div>
+    </div>
+
+    <script>
+        let currentCell = null;
+        let timecardCounter = 1;
+
+        function openModal(cell) {
+            currentCell = cell;
+            document.getElementById("leaveModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("leaveModal").style.display = "none";
+        }
+
+        function selectLeaveType() {
+            const leaveType = document.getElementById("leaveType").value;
+            if (currentCell) {
+                currentCell.textContent = leaveType;
+                currentCell.classList.add('highlight');
+                closeModal();
+            }
+        }
+
+        function generateNewTimecard() {
+            const timecardSection = document.getElementById('timecardsContainer');
+            const newTimecard = document.createElement('div');
+            newTimecard.classList.add('timecard');
+
+            newTimecard.innerHTML = `
+                <div class="timecard-header">
+                    <h2>Week ${timecardCounter}</h2>
+                    <button class="generate-button" onclick="generateNewTimecard()">Generate New</button>
+                </div>
+                <p><strong>Monday:</strong> </p>
+                <p><strong>Tuesday:</strong> </p>
+                <p><strong>Wednesday:</strong> </p>
+                <p><strong>Thursday:</strong> </p>
+                <p><strong>Friday:</strong> </p>
+                <p><strong>Saturday:</strong> </p>
+                <p><strong>Sunday:</strong> </p>
+            `;
+
+            timecardSection.appendChild(newTimecard);
+            timecardCounter++;
+        }
+    </script>
+</body>
+</html>

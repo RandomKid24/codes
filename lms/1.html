@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Timecard with React (CDN)</title>
+    <!-- React and ReactDOM CDN links -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX support -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .week-label {
+            margin-top: 5px;
+            color: #666;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: normal;
+        }
+
+        .day-cell {
+            background-color: #f9f9f9;
+            font-weight: bold;
+            color: #333;
+            width: 10%;
+        }
+
+        .date-cell {
+            font-weight: bold;
+            width: 10%;
+        }
+
+        .leave-type {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .status-cell {
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Footer Styles */
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div id="root" class="container"></div>
+
+    <script type="text/babel">
+        // React Component for Weekly Timecard
+        function WeeklyTimecard() {
+            // Function to get current week dates
+            function getCurrentWeekDates() {
+                const today = new Date();
+                const currentDay = today.getDay();
+                const firstDayOfWeek = new Date(today.setDate(today.getDate() - currentDay + (currentDay === 0 ? -6 : 1)));
+                const weekDates = [];
+                for (let i = 0; i < 7; i++) {
+                    const date = new Date(firstDayOfWeek);
+                    date.setDate(date.getDate() + i);
+                    weekDates.push(date);
+                }
+                return weekDates;
+            }
+
+            // Function to generate table rows for each day of the week
+            function populateTimecard() {
+                const weekDates = getCurrentWeekDates();
+                const rows = [];
+                weekDates.forEach((date, index) => {
+                    const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' });
+                    const dayOfMonth = date.getDate();
+                    rows.push(
+                        <tr key={index}>
+                            <td className="day-cell">{dayOfWeek}</td>
+                            <td className="date-cell">{dayOfMonth}</td>
+                            <td><select className="leave-type">
+                                <option value="">Select Leave Type</option>
+                                <option value="Annual Leave">Annual Leave</option>
+                                <option value="Sick Leave">Sick Leave</option>
+                                <option value="Compensatory Off">Compensatory Off</option>
+                                <option value="Maternity Leave">Maternity Leave</option>
+                            </select></td>
+                            <td></td>
+                            <td className="status-cell"></td>
+                        </tr>
+                    );
+                });
+                return rows;
+            }
+
+            // Render the component
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>Weekly Timecard</h1>
+                        <p className="week-label">Week of {getCurrentWeekDates()[0].toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</p>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Date</th>
+                                <th>Leave Type</th>
+                                <th>Hours Worked</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {populateTimecard()}
+                        </tbody>
+                    </table>
+                    
+                    <div className="footer">
+                        <p>Indian Calendar: {getCurrentWeekDates()[0].toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render the WeeklyTimecard component to the root element
+        ReactDOM.render(<WeeklyTimecard />, document.getElementById('root'));
+    </script>
+</body>
+</html>

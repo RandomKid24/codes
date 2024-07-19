@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Weekly Timecard</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <!-- AOS (Animate On Scroll) CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .header {
+            background: #00d1b2;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .select-leave {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fff;
+        }
+        .summary {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .summary h3 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .leave-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid columns */
+    gap: 20px; /* Gap between grid items */
+}
+
+.leave-box {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.leave-title {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.leave-info {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.date {
+    font-size: 0.7rem;
+    color: #888;
+}
+
+        .footer {
+            background: #f0f2f5;
+            padding: 20px;
+            text-align: center;
+            border-radius: 0 0 10px 10px;
+        }
+        .footer button {
+            background: #00d1b2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .footer button:hover {
+            background: #00c4a7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" data-aos="fade-up">
+        <div class="card">
+            <div class="header">
+                Weekly Timecard
+            </div>
+            <form id="timecard-form">
+                <div class="table-container">
+                    <table class="table is-fullwidth is-bordered">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Week 1</th>
+                                <th>Week 2</th>
+                                <th>Week 3</th>
+                                <th>Week 4</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Monday -->
+                            <tr>
+                                <td>Monday <span class="date">(01 Jul)</span></td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="1" data-day="monday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="2" data-day="monday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="3" data-day="monday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="4" data-day="monday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Tuesday -->
+                            <tr>
+                                <td>Tuesday <span class="date">(02 Jul)</span></td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="1" data-day="tuesday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="2" data-day="tuesday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="3" data-day="tuesday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="4" data-day="tuesday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Wednesday -->
+                            <tr>
+                                <td>Wednesday <span class="date">(03 Jul)</span></td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="1" data-day="wednesday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="2" data-day="wednesday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="3" data-day="wednesday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="4" data-day="wednesday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Thursday -->
+                            <tr>
+                                <td>Thursday <span class="date">(04 Jul)</span></td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="1" data-day="thursday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="2" data-day="thursday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="3" data-day="thursday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="4" data-day="thursday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Friday -->
+                            <tr>
+                                <td>Friday <span class="date">(05 Jul)</span></td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="1" data-day="friday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="2" data-day="friday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="3" data-day="friday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        <select class="select-leave week-select" data-week="4" data-day="friday">
+                                            <option value="work">Work</option>
+                                            <option value="sick">Sick Leave</option>
+                                            <option value="vacation">Vacation</option>
+                                            <option value="personal">Personal Leave</option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Add rows for other days of the week similarly -->
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+            <!-- Summary Section -->
+            <div id="summary-section" class="summary">
+                <h3>Leave Summary</h3>
+                <div class="leave-grid">
+                    <div class="leave-box" id="sick-leave-summary">
+                        <div class="leave-title">Sick Leave</div>
+                        <div class="leave-info">Total days: 0</div>
+                        <div class="leave-info" id="sick-leave-dates"></div>
+                    </div>
+                    <div class="leave-box" id="vacation-leave-summary">
+                        <div class="leave-title">Vacation</div>
+                        <div class="leave-info">Total days: 0</div>
+                        <div class="leave-info" id="vacation-leave-dates"></div>
+                    </div>
+                    <div class="leave-box" id="personal-leave-summary">
+                        <div class="leave-title">Personal Leave</div>
+                        <div class="leave-info">Total days: 0</div>
+                        <div class="leave-info" id="personal-leave-dates"></div>
+                    </div>
+                    <div class="leave-box">
+                        <div class="leave-title">Compensatory Leave</div>
+                        <div class="leave-info">Total days: 0</div>
+                        <div class="leave-info" id="comp-leave-dates"></div>
+                    </div>
+                    <div class="leave-box">
+                        <div class="leave-title">Maternity Leave</div>
+                        <div class="leave-info">Total days: 0</div>
+                        <div class="leave-info" id="maternity-leave-dates"></div>
+                    </div>
+                    <!-- Add more leave boxes as needed -->
+                </div>
+            </div>
+            
+            <div class="footer">
+                <button type="button" id="submit-btn" class="button is-primary">Submit Timecard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AOS (Animate On Scroll) JS -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <!-- Tailwind CSS Utility Classes -->
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+    <script>
+        // Initialize AOS (Animate On Scroll)
+        AOS.init();
+
+        // Function to update leave summaries
+        function updateLeaveSummary() {
+            const summaryData = {
+                'sick': { totalDays: 0, dates: [] },
+                'vacation': { totalDays: 0, dates: [] },
+                'personal': { totalDays: 0, dates: [] }
+                // Add more types if necessary
+            };
+
+            // Traverse each week and day
+            for (let week = 1; week <= 4; week++) {
+                for (let day of ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']) {
+                    const selectElement = document.querySelector(`.week-select[data-week="${week}"][data-day="${day}"]`);
+                    const leaveType = selectElement.value;
+
+                    // Update summary data based on selected leave type
+                    switch (leaveType) {
+                        case 'sick':
+                            summaryData.sick.totalDays++;
+                            summaryData.sick.dates.push(`${day.charAt(0).toUpperCase() + day.slice(1)}, Week ${week}`);
+                            break;
+                        case 'vacation':
+                            summaryData.vacation.totalDays++;
+                            summaryData.vacation.dates.push(`${day.charAt(0).toUpperCase() + day.slice(1)}, Week ${week}`);
+                            break;
+                        case 'personal':
+                            summaryData.personal.totalDays++;
+                            summaryData.personal.dates.push(`${day.charAt(0).toUpperCase() + day.slice(1)}, Week ${week}`);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            // Update the DOM with the summary data
+            for (let type in summaryData) {
+                const leaveBox = document.getElementById(`${type}-leave-summary`);w
+                const leaveDates = document.getElementById(`${type}-leave-dates`);
+                
+                leaveBox.querySelector('.leave-info').textContent = `Total days: ${summaryData[type].totalDays}`;
+                leaveDates.textContent = `Dates: ${summaryData[type].dates.join(', ')}`;
+            }
+        }
+
+        // Event listener for form change
+        document.getElementById('timecard-form').addEventListener('change', function (event) {
+            updateLeaveSummary();
+        });
+
+        // Event listener for submit button
+        document.getElementById('submit-btn').addEventListener('click', function () {
+            // Replace with your submit logic
+            alert('Timecard submitted!');
+        });
+
+        // Initial call to update leave summary on page load
+        updateLeaveSummary();
+
+        
+    </script>
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script>
+    // Function to update current Indian calendar date in timecard and leave summary
+    function updateIndianCalendarDates() {
+        const currentDate = moment().format('dddd, Do MMMM YYYY'); // Format date in full weekday, ordinal day Month YYYY format
+        document.getElementById('timecard-current-date').textContent = currentDate;
+        document.getElementById('sick-current-date').textContent = currentDate;
+        document.getElementById('vacation-current-date').textContent = currentDate;
+        document.getElementById('personal-current-date').textContent = currentDate;
+        // Add logic to update more elements if needed
+    }
+
+    // Initial call to update Indian calendar dates on page load
+    updateIndianCalendarDates();
+</script>
+
+</body>
+</html>

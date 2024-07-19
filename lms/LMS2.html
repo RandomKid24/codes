@@ -1,0 +1,420 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Leaves - Aureole Pharma Pvt Ltd</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <style>
+.calendar {
+    width: 100%; /* Ensure calendar fills its container */
+    max-width: 600px; /* Set a maximum width for responsiveness */
+    margin: auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.calendar .header {
+    background-color: #218BC7;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.calendar .navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 0 10px;
+}
+
+.calendar .prev,
+.calendar .next {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    padding: 8px;
+}
+
+
+
+.calendar .days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    background-color: #f7f7f7;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.calendar .day {
+    padding: 12px 0;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.calendar .day:hover {
+    background-color: #218BC7;
+}
+
+.calendar .selected-range {
+    position: relative;
+    background-color: #bee3f8;
+    overflow: hidden;
+}
+
+.calendar .selected-range:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 70%;
+    height: 2px;
+}
+
+
+.calendar .weekend {
+    color: red;
+}
+
+.calendar .start-date,
+.calendar .end-date {
+    background-color: #218BC7;
+    color: white;
+}
+
+.calendar .end-date {
+    border-radius:0% 20% 20% 0%;
+}
+.calendar .start-date {
+    border-radius:20% 0%  0% 20%;
+}
+
+.calendar .day-names {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: bold;
+    padding: 5px 0;
+    background-color: #f0f0f0;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+.nav{
+    z-index: 1000;
+}
+
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md sticky top-0 nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#" class="text-2xl font-bold text-gray-900">Aureole</a>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                    <a href="home.html" class="border-b-2 border-transparent text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
+                    <a href="leaves_copy.html" class="text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium border-b-2 border-indigo-500">Leaves</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium">Assets</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium">Contact</a>
+                </div>
+            </div>
+            <div class="hidden sm:ml-6 sm:flex items-center align-center">
+                <span class="text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Ritesh Mahale</span><span>
+                <img class="rounded-full" src="https://via.placeholder.com/50X50" alt="Announcement Image"></span>
+            </div>
+            <div class="-mr-2 flex items-center sm:hidden">
+                <button type="button" class="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                    <span class="sr-only">Open main menu</span>
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="lg:flex lg:space-x-8">
+            <!-- Main Content Area -->
+            <div class="lg:w-2/3">
+                <div class="bg-white shadow-sm rounded-lg mb-6 p-6">
+                    <h2 class="text-2xl font-bold mb-4">Manage Leaves</h2>
+                    <!-- Leave Request Form -->
+                    <form class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="calendar-container mb-4 w-full">
+                                <section id="calendar" class="py-10">
+                                    <div class="calendar">
+                                        <div class="header bg-green-500 text-white py-2 rounded-t-lg">
+                                            <div class="navigation flex justify-between items-center px-4">
+                                                <div class="prev text-lg cursor-pointer"><i class="fas fa-chevron-left"></i></div>
+                                                <div class="month-year text-lg font-semibold"></div>
+                                                <div class="next text-lg cursor-pointer"><i class="fas fa-chevron-right"></i></div>
+                                            </div>
+                                        </div>
+                                        <div class="day-names">
+                                            <div>Sun</div>
+                                            <div>Mon</div>
+                                            <div>Tue</div>
+                                            <div>Wed</div>
+                                            <div>Thu</div>
+                                            <div>Fri</div>
+                                            <div>Sat</div>
+                                        </div>
+                                        <div class="days grid grid-cols-7 gap-1 py-2"></div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <label for="leaveType" class="w-32 text-gray-700">Leave Type:</label>
+                            <select id="leaveType" name="leaveType" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                                <option value="vacation">Vacation</option>
+                                <option value="sick">Sick Leave</option>
+                                <option value="personal">Personal Leave</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <label for="start-date" class="w-32 text-gray-700">Start Date:</label>
+                            <input type="date" id="start-date" name="start-date" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <label for="end-date" class="w-32 text-gray-700">End Date:</label>
+                            <input type="date" id="end-date" name="end-date" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <label for="reason" class="w-32 text-gray-700">Reason:</label>
+                            <textarea id="reason" name="reason" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"></textarea>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Sidebar -->
+            <div class="lg:w-1/3">
+                <div class="bg-white shadow-sm rounded-lg mb-6 p-6">
+                    <h3 class="text-xl font-bold mb-4">Upcoming Holidays</h3>
+                    <ul class="divide-y divide-gray-200">
+                        <li class="py-2">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM3 10a7 7 0 1114 0 7 7 0 01-14 0z" clip-rule="evenodd" />
+                                        <path fill-rule="evenodd" d="M10 0a1 1 0 011 1v4a1 1 0 11-2 0V1a1 1 0 011-1z" clip-rule="evenodd" />
+                                        <path d="M15 10a1 1 0 00-1-1h-4a1 1 0 100 2h4a1 1 0 001-1z" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3 flex justify-between w-full">
+                                    <p class="text-sm text-gray-900">New Year's Day</p>
+                                    <span class="text-xs text-gray-500">Jan 1, 2025</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="py-2">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM3 10a7 7 0 1114 0 7 7 0 01-14 0z" clip-rule="evenodd" />
+                                        <path fill-rule="evenodd" d="M10 0a1 1 0 011 1v4a1 1 0 11-2 0V1a1 1 0 011-1z" clip-rule="evenodd" />
+                                        <path d="M15 10a1 1 0 00-1-1h-4a1 1 0 100 2h4a1 1 0 001-1z" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3 flex justify-between w-full">
+                                    <p class="text-sm text-gray-900">Labor Day</p>
+                                    <span class="text-xs text-gray-500">May 1, 2025</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="py-2">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM3 10a7 7 0 1114 0 7 7 0 01-14 0z" clip-rule="evenodd" />
+                                        <path fill-rule="evenodd" d="M10 0a1 1 0 011 1v4a1 1 0 11-2 0V1a1 1 0 011-1z" clip-rule="evenodd" />
+                                        <path d="M15 10a1 1 0 00-1-1h-4a1 1 0 100 2h4a1 1 0 001-1z" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3 flex justify-between w-full">
+                                    <p class="text-sm text-gray-900">Independence Day</p>
+                                    <span class="text-xs text-gray-500">Aug 15, 2025</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <a href="#" class="block text-center text-sm text-indigo-600 mt-4 hover:underline">View all holidays</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white shadow-md mt-16">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-center space-x-6">
+                <a href="#" class="text-gray-400 hover:text-gray-500">
+                    <span class="sr-only">Facebook</span>
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M12 21.88c-4.477 0-8-3.68-8-8.25 0-4.343 3.518-7.875 7.848-7.875 3.645 0 5.346 2.688 5.346 5.906v1.34H13.92v-2.89c0-.802-.048-1.954-1.173-1.954-.807 0-1.167.604-1.167 1.543v2.301H9.002v-2.512c0-2.567 1.54-3.983 3.864-3.983 2.318 0 3.873 1.44 3.873 3.67v2.12h-2.556c-.054.346-.214.807-.42 1.095h2.975l-.384 2.89h-2.591v7.038c2.94-.295 5.34-2.21 5.34-4.507 0-2.644-2.34-4.804-5.335-4.804-1.01 0-1.954.46-2.66 1.25-.34.4-.62.85-.797 1.35h-.004l1.486-.002.004-.002c.07 0 .142.002.214.002 1.58 0 2.946-1.08 3.398-2.518h1.636c-.504 1.595-2.048 2.75-3.87 2.75z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-gray-500">
+                    <span class="sr-only">Twitter</span>
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M7.725 19.901c5.67 0 8.789-4.755 8.789-8.85 0-.134 0-.267-.009-.4A6.313 6.313 0 0 0 22 8.356a6.42 6.42 0 0 1-1.825.503 3.169 3.169 0 0 0 1.388-1.75 6.42 6.42 0 0 1-2.03.773 3.17 3.17 0 0 0-5.384 2.885 8.988 8.988 0 0 1-6.528-3.307 3.169 3.169 0 0 0 .98 4.23A3.162 3.162 0 0 1 2.3 10.49v.04c0 1.435.967 2.636 2.295 2.91a3.166 3.166 0 0 1-1.43-.396c-.002.036-.002.072-.002.108 0 2.003 1.42 3.668 3.306 4.04a3.202 3.202 0 0 1-.84.111 3.158 3.158 0 0 1-.612-.062c.414 1.61 1.62 2.78 3.046 2.814a6.333 6.333 0 0 1-3.941 1.366A6.54 6.54 0 0 1 1 19.44a8.94 8.94 0 0 0 4.725 1.36" clip-rule="evenodd" />
+                    </svg>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-gray-500">
+                    <span class="sr-only">LinkedIn</span>
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M2 3a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3zm5 16V9H6v10h1zm.5-10a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM20 12.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 1 .5.5zM18 15a3 3 0 1 0-6 0 3 3 0 0 0 6 0zm-3-2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+        
+    </footer>
+    <script>
+        // Initialize calendar with current month and year
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        let startDate = null;
+        let endDate = null;
+
+        function updateCalendar() {
+            const daysElement = document.querySelector('.calendar .days');
+            daysElement.innerHTML = '';
+
+            const monthYearElement = document.querySelector('.calendar .month-year');
+            monthYearElement.textContent = `${getMonthName(currentMonth)} ${currentYear}`;
+
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const startingDay = firstDay.getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Populate calendar days
+            for (let i = 0; i < startingDay; i++) {
+                let emptyElement = document.createElement('div');
+                daysElement.appendChild(emptyElement);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                let dayElement = document.createElement('div');
+                dayElement.classList.add('day', 'border', 'border-gray-300', 'cursor-pointer');
+                dayElement.textContent = day;
+                daysElement.appendChild(dayElement);
+
+                // Highlight weekends
+                let dayOfWeek = (startingDay + day - 1) % 7;
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    dayElement.classList.add('weekend');
+                }
+
+                // Highlight selected range
+                if (startDate && endDate) {
+                    let selectedDate = new Date(currentYear, currentMonth, day);
+                    if (selectedDate >= startDate && selectedDate <= endDate) {
+                        dayElement.classList.add('selected-range');
+                    }
+                }
+
+                // Mark start and end dates
+                if (startDate && day === startDate.getDate() && currentMonth === startDate.getMonth() && currentYear === startDate.getFullYear()) {
+                    dayElement.classList.add('start-date');
+                }
+
+                if (endDate && day === endDate.getDate() && currentMonth === endDate.getMonth() && currentYear === endDate.getFullYear()) {
+                    dayElement.classList.add('end-date');
+                }
+
+                dayElement.addEventListener('click', function () {
+                    handleDayClick(day);
+                });
+            }
+        }
+
+        // Handle day click event to select start and end dates
+        function handleDayClick(day) {
+    let selectedDate = new Date(currentYear, currentMonth, day);
+
+    if (!startDate) {
+        startDate = selectedDate;
+        document.getElementById('start-date').value = `${selectedDate.getFullYear()}-${padZero(selectedDate.getMonth() + 1)}-${padZero(selectedDate.getDate())}`;
+    } else if (!endDate) {
+        if (selectedDate < startDate) {
+            endDate = startDate;
+            startDate = selectedDate;
+        } else {
+            endDate = selectedDate;
+        }
+        document.getElementById('start-date').value = `${startDate.getFullYear()}-${padZero(startDate.getMonth() + 1)}-${padZero(startDate.getDate())}`;
+        document.getElementById('end-date').value = `${endDate.getFullYear()}-${padZero(endDate.getMonth() + 1)}-${padZero(endDate.getDate())}`;
+    } else {
+        startDate = selectedDate;
+        endDate = null;
+        document.getElementById('start-date').value = `${startDate.getFullYear()}-${padZero(startDate.getMonth() + 1)}-${padZero(startDate.getDate())}`;
+        document.getElementById('end-date').value = '';
+    }
+
+    updateCalendar();
+}
+
+// Helper function to pad zero to single digit numbers
+function padZero(num) {
+    return (num < 10 ? '0' : '') + num;
+}
+
+        // Function to get month name
+        function getMonthName(monthIndex) {
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            return monthNames[monthIndex];
+        }
+
+        // Initialize calendar
+        document.querySelector('.calendar .prev').addEventListener('click', function () {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateCalendar();
+        });
+
+        document.querySelector('.calendar .next').addEventListener('click', function () {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateCalendar();
+        });
+
+        updateCalendar();
+    </script>
+</body>
+
+</html>

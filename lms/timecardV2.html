@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Timecard System</title>
+  <!-- Bulma CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  <!-- Boxicons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/boxicons/2.0.7/css/boxicons.min.css">
+ 
+  <!-- Custom CSS -->
+  <style>
+    body {
+      background-color: #f3f4f6; /* Light gray background */
+      color: #374151; /* Default text color */
+      margin: 0; /* Remove default body margin */
+      font-family: Arial, sans-serif; /* Optional: Change font */
+    }
+
+    .header-bg {
+      background-color: #4d545c; /* GitHub-like header background color */
+      color: white; /* White text on header */
+    }
+
+    .header-content {
+      padding: 20px;
+      text-align: center; /* Center align header content */
+    }
+
+    .header-title {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .header-subtitle {
+      font-size: 16px;
+    }
+
+    .calendar-cell {
+  cursor: pointer;
+  text-align: center;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  position: relative;
+  height: 100px;
+  width: calc(100% / 7);
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background and transform */
+}
+
+.calendar-cell:hover {
+  background-color: #f0f4f8; /* Light gray hover */
+}
+
+.calendar-cell.selected {
+  background-color: white;
+  border: 1px solid #4CAF50;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px) scale(1.01); /* Adjusted scale for slight enlargement */
+}
+
+.leave-type {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  padding: 2px 5px;
+  font-size: 12px;
+  border-radius: 0.25rem;
+  max-width: calc(100% - 10px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.leave-type.present {
+  background-color: rgba(76, 175, 80, 0.4); /* Light green background for 'Present' */
+  color: #2c784e; /* Dark green text */
+}
+
+.leave-type.absent {
+  background-color: rgba(220, 53, 69, 0.4); /* Light red background for 'Absent' */
+  color: #8b2c3d; /* Dark red text */
+}
+
+.leave-type.weeklyoff {
+  background-color: rgba(23, 162, 184, 0.4); /* Light blue background for 'Weekly Off' */
+  color: #0c4b57; /* Dark blue text */
+}
+
+.leave-type.compoff {
+  background-color: rgba(108, 117, 125, 0.4); /* Light gray background for 'Comp Off' */
+  color: #4b5057; /* Dark gray text */
+}
+
+.leave-type.shortleavepresent {
+  background-color: rgba(255, 193, 7, 0.4); /* Light yellow background for 'Short Leave Present' */
+  color: #7f5f00; /* Dark yellow text */
+}
+
+.leave-type.halfday {
+  background-color: rgba(255, 152, 0, 0.4); /* Light orange background for 'Half Day' */
+  color: #9c6000; /* Dark orange text */
+}
+
+.leave-type.outdoorworking {
+  background-color: rgba(23, 162, 184, 0.4); /* Light blue background for 'Outdoor Working' */
+  color: #0c4b57; /* Dark blue text */
+}
+
+.leave-type.outdoortravelling {
+  background-color: rgba(23, 162, 184, 0.4); /* Light blue background for 'Outdoor Travelling' */
+  color: #0c4b57; /* Dark blue text */
+}
+
+.leave-type.previlagedleave {
+  background-color: rgba(108, 117, 125, 0.4); /* Light gray background for 'Previlaged Leave' */
+  color: #4b5057; /* Dark gray text */
+}
+
+.leave-type.paidholiday {
+  background-color: rgba(76, 175, 80, 0.4); /* Light green background for 'Paid Holiday' */
+  color: #2c784e; /* Dark green text */
+}
+
+.leave-type.unpaidholiday {
+  background-color: rgba(220, 53, 69, 0.4); /* Light red background for 'Unpaid Holiday' */
+  color: #8b2c3d; /* Dark red text */
+}
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      border: 1px solid #d2d6dc;
+      padding: 10px;
+      font-size: 14px;
+      outline: none;
+      border-radius: 0.25rem;
+      background-color: white; /* White background for form inputs */
+      color: #374151; /* Default text color */
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: #4CAF50;
+      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+    }
+
+    .form-submit {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-submit:hover {
+      background-color: #45a049;
+    }
+
+    .holiday-box {
+    transition: background-color 0.3s ease;
+  }
+
+  .holiday-box:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Lighten background on hover */
+  }
+
+  .holiday-name {
+    transition: color 0.3s ease; /* Smooth color transition */
+  }
+
+  .holiday-name:hover {
+    color: #4CAF50; /* Light up text color on hover */
+  }
+  .footer {
+  background-color: #4d545c; /* GitHub-like footer background color */
+  color: white; /* White text on footer */
+  padding: 20px 0; /* Padding for content inside the footer */
+  position: fixed; /* Stick to the bottom of the viewport */
+  width: 100%; /* Full width */
+  bottom: 0; /* Stick to the bottom */
+  left: 0; /* Ensure footer starts from the left edge */
+  right: 0; /* Ensure footer ends at the right edge */
+}
+
+.footer p {
+  margin-bottom: 5px; /* Adjust spacing between paragraphs */
+}
+
+.footer i {
+  color: #4CAF50; /* Green heart icon color */
+}
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <div class="header-bg">
+    <div class="header-content">
+      <h1 class="header-title">Employee Timecard System</h1>
+      <p class="header-subtitle">Track your work hours efficiently</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container my-5">
+    <div class="columns">
+      <div class="column is-two-thirds">
+        <div class="card">
+          <header class="card-header">
+            <p class="card-header-title">
+              Calendar
+            </p>
+            <a href="#" class="card-header-icon" aria-label="more options">
+              <span class="icon">
+                <i class="bx bx-chevron-left"></i>
+              </span>
+            </a>
+          </header>
+          <div class="card-content">
+            <div class="table-container">
+              <table class="table is-bordered is-fullwidth">
+                <thead>
+                  <tr>
+                    <th class="has-text-centered">Sun</th>
+                    <th class="has-text-centered">Mon</th>
+                    <th class="has-text-centered">Tue</th>
+                    <th class="has-text-centered">Wed</th>
+                    <th class="has-text-centered">Thu</th>
+                    <th class="has-text-centered">Fri</th>
+                    <th class="has-text-centered">Sat</th>
+                  </tr>
+                </thead>
+                <tbody id="calendarBody">
+                  <!-- Calendar rows will be dynamically generated here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="card">
+          <header class="card-header">
+            <p class="card-header-title">
+              Timecard Details
+            </p>
+          </header>
+          <div class="card-content">
+            <div class="content">
+              <form id="timecardForm">
+                <div class="field">
+                  <label class="label">Date</label>
+                  <div class="control">
+                    <input id="date" name="date" type="text" class="input" readonly>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Type of Leave</label>
+                  <div class="control">
+                    <div class="select">
+                      <select id="leave-type" name="leave-type">
+                        <option value="present">Present</option>
+                        <option value="absent">Absent</option>
+                        <option value="weeklyoff">Weekly Off</option>
+                        <option value="compoff">Comp Off</option>
+                        <option value="shortleavepresent">Short Leave Present</option>
+                        <option value="halfday">Half Day</option>
+                        <option value="outdoorworking">Outdoor Working</option>
+                        <option value="outdoortravelling">Outdoor Travelling</option>
+                        <option value="previlagedleave">Previlaged Leave</option>
+                        <option value="paidholiday">Paid Holiday</option>
+                        <option value="unpaidholiday">Unpaid Holiday</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Reason</label>
+                  <div class="control">
+                    <textarea id="reason" name="reason" class="textarea" rows="3"></textarea>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="control">
+                    <button type="submit" class="button is-success form-submit">Submit</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!-- Additional Section -->
+<!-- Additional Section -->
+<div class="columns mt-5">
+    <div class="column is-two-thirds">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">
+            Additional Section
+          </p>
+        </header>
+        <div class="card-content">
+          <div class="content">
+            <div class="columns is-multiline">
+              <div class="column is-half">
+                <div class="notification is-success is-light box holiday-box">
+                  <strong>Full Day Holiday</strong>
+                  <ul>
+                    <li>Independence Day (15th August)</li>
+                    <li>Republic Day (26th January)</li>
+                    <li>Maharashtra Day (01st May)</li>
+                    <li>Gudhipadva</li>
+                    <li>Akshay Tritiya</li>
+                    <li>RakshaBandhan</li>
+                    <li>Vijaya Dashami</li>
+                    <li>Diwali</li>
+                    <li>Dip Amawasya</li>
+                    <li>Diwali Padwa</li>
+                    <li>Bhaubeej</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="column is-half">
+                <div class="notification is-info is-light box holiday-box">
+                  <strong>Half Day Holiday (First/Second Half)</strong>
+                  <ul>
+                    <li>Ganesh Chaturthi (Second Half)</li>
+                    <li>Anant Chaturdashi (First Half)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer Section -->
+<footer class="footer">
+    <div class="content has-text-centered">
+      <p>
+        Employee Timecard System &copy; 2024. All rights reserved.
+      </p>
+      <p>
+        Designed with <i class="bx bxs-heart"></i> by Your Company Name
+      </p>
+    </div>
+  </footer>
+  
+
+ 
+  <!-- Custom JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+  const calendarBody = document.getElementById('calendarBody');
+  const dateInput = document.getElementById('date');
+  const form = document.getElementById('timecardForm');
+
+  let currentDate = new Date();
+  let timecardData = {}; // Object to store timecard entries
+
+  function renderCalendar() {
+    const month = currentDate.getMonth();
+    const year = currentDate.getFullYear();
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    
+    calendarBody.innerHTML = '';
+
+    let date = 1;
+    for (let i = 0; i < 6; i++) {
+      const row = document.createElement('tr');
+      
+      for (let j = 0; j < 7; j++) {
+        if (i === 0 && j < firstDayOfMonth) {
+          const cell = document.createElement('td');
+          row.appendChild(cell);
+        } else if (date > daysInMonth) {
+          break;
+        } else {
+          const cell = document.createElement('td');
+          cell.textContent = date;
+          cell.classList.add('has-text-centered', 'calendar-cell');
+          cell.addEventListener('click', () => selectDate(cell));
+          
+          const cellDate = new Date(year, month, date);
+          const formattedDate = cellDate.toDateString();
+          
+          // Highlight today's date
+          if (isSameDay(currentDate, cellDate)) {
+            cell.classList.add('today');
+          }
+
+          // Check if there's a timecard entry for this date
+          if (timecardData[formattedDate]) {
+            const { leaveType } = timecardData[formattedDate];
+            const leaveTypeSpan = document.createElement('span');
+            leaveTypeSpan.classList.add('leave-type', leaveType.toLowerCase());
+            leaveTypeSpan.textContent = leaveType;
+            cell.appendChild(leaveTypeSpan);
+          }
+          
+          row.appendChild(cell);
+          date++;
+        }
+      }
+      
+      calendarBody.appendChild(row);
+    }
+  }
+
+  function selectDate(cell) {
+    const selectedDate = parseInt(cell.textContent);
+    currentDate.setDate(selectedDate);
+    dateInput.value = currentDate.toDateString();
+    
+    // Remove 'selected' class from all cells
+    const allCells = document.querySelectorAll('.calendar-cell');
+    allCells.forEach(cell => cell.classList.remove('selected'));
+    
+    // Add 'selected' class to the clicked cell
+    cell.classList.add('selected');
+  }
+
+  function isSameDay(date1, date2) {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate();
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    
+    const formData = new FormData(form);
+    const date = formData.get('date');
+    const leaveType = formData.get('leave-type');
+    const reason = formData.get('reason');
+    
+    // Update timecard data
+    const formattedDate = new Date(date).toDateString();
+    timecardData[formattedDate] = { leaveType, reason };
+    
+    // Render calendar with updated data
+    renderCalendar();
+
+    // Reset form fields
+    form.reset();
+    dateInput.value = ''; // Reset date input
+  });
+
+  renderCalendar(); // Initial rendering of calendar
+});
+
+
+  </script>
+</body>
+</html>
+

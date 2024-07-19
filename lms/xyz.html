@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Weekly Timecard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hover.css/2.3.1/css/hover-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet">
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #edf2f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f7fafc;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        .header {
+            background-color: #2b6cb0;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Main content */
+        .timecard-container {
+            display: flex;
+            flex-direction: column; /* Display timecards in a column by default */
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .timecard {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+            margin-bottom: 20px;
+        }
+
+        .timecard-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2b6cb0;
+        }
+
+        .current-date {
+            font-size: 1.2rem;
+            color: #718096;
+            margin-bottom: 1rem;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .table th, .table td {
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #2d3748;
+            color: white;
+        }
+
+        .table tr:hover {
+            background-color: #cbd5e0;
+        }
+
+        .day-label {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .leave-type {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .leave-type option {
+            padding: 8px;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #2b6cb0;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Leave type colors */
+        .leave-type-p { background-color: #38a169; color: white; }
+        .leave-type-ab { background-color: #e53e3e; color: white; }
+        .leave-type-wo { background-color: #4299e1; color: white; }
+        .leave-type-co { background-color: #d69e2e; color: white; }
+        .leave-type-slp { background-color: #4a5568; color: white; }
+        .leave-type-hd { background-color: #f6ad55; color: white; }
+        .leave-type-odw { background-color: #805ad5; color: white; }
+        .leave-type-otd { background-color: #9f7aea; color: white; }
+        .leave-type-pl { background-color: #cbd5e0; color: black; }
+        .leave-type-ph { background-color: #48bb78; color: white; }
+        .leave-type-uph { background-color: #718096; color: white; }
+
+        /* Animation for handwritten note effect */
+        .handwritten {
+            position: relative;
+            display: inline-block;
+            animation: handwriting 4s infinite;
+        }
+
+        @keyframes handwriting {
+            0%   { transform: translateY(0); }
+            50%  { transform: translateY(-2px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Responsive design for mobile view */
+        @media (min-width: 768px) {
+            .timecard-container {
+                flex-direction: row; /* Display timecards in a row on desktop */
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .timecard {
+                width: 100%; /* Full width for each timecard on desktop */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="text-2xl">Employee Weekly Timecard</h1>
+        </header>
+
+        <main>
+            <div class="timecard-container" id="timecardContainer"></div>
+            <div class="flex justify-between mt-4">
+                <button id="prevWeekBtn" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded transition-colors duration-300">
+                    <i class="fas fa-chevron-left mr-2"></i> Previous Week
+                </button>
+                <button id="nextWeekBtn" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded transition-colors duration-300">
+                    Next Week <i class="fas fa-chevron-right ml-2"></i>
+                </button>
+            </div>
+            <button id="submitTimecardBtn" class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 mt-4 rounded transition-colors duration-300">
+                Submit Timecard
+            </button>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Employee Timecard System</p>
+        </footer>
+    </div>
+
+    <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+    <script>
+        // Define leave types with color classes
+        const leaveTypes = [
+            { name: 'Present', colorClass: 'leave-type-p' },
+            { name: 'Absent', colorClass: 'leave-type-ab' },
+            { name: 'Weeklyoff', colorClass: 'leave-type-wo' },
+            { name: 'CompOff', colorClass: 'leave-type-co' },
+            { name: 'Shortleavepresent', colorClass: 'leave-type-slp' },
+            { name: 'HalfDay', colorClass: 'leave-type-hd' },
+            { name: 'OutdoorWorking', colorClass: 'leave-type-odw' },
+            { name: 'Outdoor Travelling', colorClass: 'leave-type-otd' },
+            { name: 'Previlagedleave', colorClass: 'leave-type-pl' },
+            { name: 'PaidHoliday', colorClass: 'leave-type-ph' },
+            { name: 'UnpaidHoliday', colorClass: 'leave-type-uph' }
+        ];
+
+        // Function to create four weeks of timecards
+        function createFourWeeksTimecards() {
+            const timecardContainer = document.getElementById('timecardContainer');
+            timecardContainer.innerHTML = '';
+
+            for (let i = 0; i < 4; i++) {
+                const weekIndex = i + 1;
+                const currentDate = new Date();
+                currentDate.setDate(currentDate.getDate() + (weekIndex - 1) * 7); // Adjust date for the current week
+
+                const weekTimecard = createTimecardElement(currentDate);
+                timecardContainer.appendChild(weekTimecard);
+            }
+
+            // Load saved leave types
+            loadLeaveTypes();
+        }
+
+        // Function to create a single timecard element
+        function createTimecardElement(currentDate) {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            const timecard = document.createElement('div');
+            timecard.classList.add('timecard');
+
+            // Timecard title and current date
+            const title = document.createElement('h2');
+            title.classList.add('timecard-title');
+            title.textContent = 'Week of ' + monthNames[currentDate.getMonth()] + ' ' + currentDate.getDate() + ', ' + currentDate.getFullYear();
+            timecard.appendChild(title);
+
+            // Day-wise leave selection
+            const table = document.createElement('table');
+            table.classList.add('table');
+
+            // Table header (days)
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            days.forEach(day => {
+                const th = document.createElement('th');
+                th.textContent = day.substr(0, 3); // Display only first three letters of the day
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Table body (leave type selection)
+            const tbody = document.createElement('tbody');
+            days.forEach(day => {
+                const td = document.createElement('td');
+                const dayLabel = document.createElement('div');
+                dayLabel.classList.add('day-label');
+                dayLabel.textContent = day;
+                td.appendChild(dayLabel);
+
+                const select = document.createElement('select');
+                select.classList.add('leave-type');
+                leaveTypes.forEach(type => {
+                    const option = document.createElement('option');
+                    option.textContent = type.name;
+                    option.classList.add(type.colorClass);
+                    select.appendChild(option);
+                });
+                td.appendChild(select);
+
+                tbody.appendChild(td);
+            });
+            table.appendChild(tbody);
+
+            timecard.appendChild(table);
+
+            return timecard;
+        }
+
+        // Load saved leave types
+        function loadLeaveTypes() {
+            $('.leave-type').select2({
+                minimumResultsForSearch: -1 // Disable search box in select dropdown
+            });
+        }
+
+        // Initial page load
+        document.addEventListener('DOMContentLoaded', () => {
+            createFourWeeksTimecards(); // Load four weeks of timecards initially
+        });
+
+        // Previous week button click handler
+        document.getElementById('prevWeekBtn').addEventListener('click', () => {
+            createFourWeeksTimecards(); // Reload four weeks of timecards (going back)
+        });
+
+        // Next week button click handler
+        document.getElementById('nextWeekBtn').addEventListener('click', () => {
+            createFourWeeksTimecards(); // Reload four weeks of timecards (going forward)
+        });
+
+        // Submit timecard button click handler
+        document.getElementById('submitTimecardBtn').addEventListener('click', () => {
+            // Implement your submit logic here
+            alert('Timecard submitted successfully!');
+        });
+    </script>
+</body>
+</html>

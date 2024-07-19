@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timecard Layout</title>
+    <!-- Linking Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Linking Bootstrap (for modal and button styles) -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="p-4">
+    <div id="app" class="container mx-auto">
+        <!-- Day Header Row -->
+        <div class="grid grid-cols-8 gap-2 mb-4">
+            <div class="h-8 bg-gray-300 flex items-center justify-center">DAY</div>
+            <div class="h-8 bg-gray-300 flex items-center justify-center">Week 1</div>
+            <div class="h-8 bg-gray-300 flex items-center justify-center">Week 2</div>
+            <div class="h-8 bg-gray-300 flex items-center justify-center">Week 3</div>
+            <div class="h-8 bg-gray-300 flex items-center justify-center">Week 4</div>
+        </div>
+        <!-- Timecard Rows (for all Weeks and Days) -->
+        <!-- Weeks 1-4 -->
+        <div class="grid grid-cols-8 gap-2 mb-2">
+            <!-- Week 1 -->
+            <div class="h-8 bg-gray-200 flex items-center justify-center">MON</div>
+            <input type="text" id="week1-day1" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(1, 1)">
+            <input type="text" id="week1-day2" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(1, 2)">
+            <input type="text" id="week1-day3" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(1, 3)">
+            <input type="text" id="week1-day4" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(1, 4)">
+        </div>
+        <div class="grid grid-cols-8 gap-2 mb-2">
+            <div class="h-8 bg-gray-200 flex items-center justify-center">TUE</div>
+            <input type="text" id="week1-day5" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(1, 5)">
+            <input type="text" id="week1-day6" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(1, 6)">
+            <input type="text" id="week1-day7" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(1, 7)">
+            <input type="text" id="week1-day8" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(1, 8)">
+        </div>
+        <div class="grid grid-cols-8 gap-2 mb-2">
+            <!-- Week 2 -->
+            <div class="h-8 bg-gray-200 flex items-center justify-center">MON</div>
+            <input type="text" id="week2-day1" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(2, 1)">
+            <input type="text" id="week2-day2" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(2, 2)">
+            <input type="text" id="week2-day3" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(2, 3)">
+            <input type="text" id="week2-day4" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(2, 4)">
+        </div>
+        <div class="grid grid-cols-8 gap-2 mb-2">
+            <div class="h-8 bg-gray-200 flex items-center justify-center">TUE</div>
+            <input type="text" id="week2-day5" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(2, 5)">
+            <input type="text" id="week2-day6" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(2, 6)">
+            <input type="text" id="week2-day7" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(2, 7)">
+            <input type="text" id="week2-day8" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(2, 8)">
+        </div>
+        <div class="grid grid-cols-8 gap-2 mb-2">
+            <!-- Week 3 -->
+            <div class="h-8 bg-gray-200 flex items-center justify-center">MON</div>
+            <input type="text" id="week3-day1" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(3, 1)">
+            <input type="text" id="week3-day2" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(3, 2)">
+            <input type="text" id="week3-day3" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(3, 3)">
+            <input type="text" id="week3-day4" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(3, 4)">
+        </div>
+        <div class="grid grid-cols-8 gap-2 mb-2">
+            <div class="h-8 bg-gray-200 flex items-center justify-center">TUE</div>
+            <input type="text" id="week3-day5" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(3, 5)">
+            <input type="text" id="week3-day6" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(3, 6)">
+            <input type="text" id="week3-day7" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(3, 7)">
+            <input type="text" id="week3-day8" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(3, 8)">
+        </div>
+        <div class="grid grid-cols-8 gap-2 mb-2">
+            <!-- Week 4 -->
+            <div class="h-8 bg-gray-200 flex items-center justify-center">MON</div>
+            <input type="text" id="week4-day1" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(4, 1)">
+            <input type="text" id="week4-day2" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(4, 2)">
+            <input type="text" id="week4-day3" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(4, 3)">
+            <input type="text" id="week4-day4" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(4, 4)">
+        </div>
+        <div class="grid grid-cols-8 gap-2 mb-2">
+            <div class="h-8 bg-gray-200 flex items-center justify-center">TUE</div>
+            <input type="text" id="week4-day5" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(4, 5)">
+            <input type="text" id="week4-day6" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(4, 6)">
+            <input type="text" id="week4-day7" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(4, 7)">
+            <input type="text" id="week4-day8" class="h-8 bg-gray-200 p-2" placeholder="Input" onclick="selectLeaveType(4, 8)">
+        </div>
+    </div>
+
+    <!-- Modal for Leave Type Selection -->
+    <div class="modal fade" id="leaveTypeModal" tabindex="-1" role="dialog" aria-labelledby="leaveTypeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="leaveTypeModalLabel">Select Leave Type</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Leave Type Selection Options -->
+                    <div class="flex flex-wrap">
+                        <button class="btn btn-primary m-2" onclick="setLeaveType('VAC', 'Vacation')">Vacation</button>
+                        <button class="btn btn-info m-2" onclick="setLeaveType('SICK', 'Sick')">Sick</button>
+                        <button class="btn btn-success m-2" onclick="setLeaveType('PERS', 'Personal')">Personal</button>
+                        <button class="btn btn-warning m-2" onclick="setLeaveType('COMP', 'Compensation')">Compensation</button>
+                        <button class="btn btn-danger m-2" onclick="setLeaveType('HOL', 'Holiday')">Holiday</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script for Modal and Leave Type Selection -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Function to set selected leave type into the input field
+        function setLeaveType(typeAbbrev, typeName) {
+            var activeInput = document.querySelector('.active-leave-type');
+            if (activeInput) {
+                activeInput.value = typeAbbrev;
+                activeInput.setAttribute('data-type-name', typeName);
+            }
+            $('#leaveTypeModal').modal('hide');
+        }
+
+        // Function to select leave type from input field
+        function selectLeaveType(week, day) {
+            var inputId = `week${week}-day${day}`;
+            var inputField = document.getElementById(inputId);
+            inputField.classList.add('active-leave-type');
+            $('#leaveTypeModal').modal('show');
+        }
+    </script>
+</body>
+
+</html>
