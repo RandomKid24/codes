@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superior Employee Timecard Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* Ensure body takes full viewport height */
+        }
+
+        .transition-transform {
+            transition: transform 0.3s ease;
+        }
+
+        .transition-transform:hover {
+            transform: scale(1.05);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flex h-full">
+        <div class="w-1/5 bg-white p-5 border-r border-gray-200 shadow-md overflow-y-auto">
+            <header class="bg-blue-500 text-white p-5 rounded-lg mb-5 text-center">
+                <h1 class="text-2xl font-bold">Superior Employee Timecard Management</h1>
+            </header>
+
+            <div class="bg-white p-5 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold text-blue-500 mb-3">Employee List</h2>
+                <input type="text" id="employeeSearch" placeholder="Search employee..." class="w-full p-2 mb-3 border border-gray-300 rounded-lg">
+                <ul id="employeeList" class="list-none p-0">
+                    <!-- Employee list items will be dynamically inserted here -->
+                </ul>
+            </div>
+        </div>
+
+        <div class="w-4/5 p-5">
+            <div class="flex overflow-x-auto space-x-4">
+                <div class="timecard-container flex space-x-4" id="timecardContainer">
+                    <!-- Timecards will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const employees = [
+            { id: 1, name: 'John Doe' },
+            { id: 2, name: 'Jane Smith' },
+            { id: 3, name: 'Alice Johnson' },
+            { id: 4, name: 'Bob Brown' }
+        ];
+
+        const employeeList = document.getElementById('employeeList');
+        const timecardContainer = document.getElementById('timecardContainer');
+
+        function getWeekDates(startDate) {
+            const start = new Date(startDate);
+            const end = new Date(start);
+            end.setDate(start.getDate() + 6); // Set end date to 6 days after start date
+
+            const formatDate = date => {
+                // Format date as dd-mm-yyyy for Indian format
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}-${month}-${year}`;
+            };
+
+            return {
+                start: formatDate(start),
+                end: formatDate(end)
+            };
+        }
+
+        function getStartOfWeek(date) {
+            const day = date.getDay();
+            const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust day to Monday
+            return new Date(date.setDate(diff));
+        }
+
+        function createTimecardElement(employee, weekStart) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'bg-white p-4 rounded-lg shadow-md min-w-[300px] flex-shrink-0 transition-transform';
+
+            const title = document.createElement('div');
+            title.className = 'text-lg font-semibold text-blue-500 mb-2';
+            title.innerHTML = `${employee.name}'s Timecard <i class="fas fa-calendar-week"></i>`;
+            wrapper.appendChild(title);
+
+            const { start, end } = getWeekDates(weekStart);
+            const currentDate = document.createElement('div');
+            currentDate.className = 'text-sm text-gray-600 mb-4';
+            currentDate.innerText = `Week: ${start} - ${end}`;
+            wrapper.appendChild(currentDate);
+
+            const table = document.createElement('table');
+            table.className = 'w-full border-collapse';
+
+            const tableHeader = document.createElement('thead');
+            tableHeader.innerHTML = `
+                <tr class="bg-blue-500 text-white">
+                    <th class="border border-gray-200 px-4 py-2">Day</th>
+                    <th class="border border-gray-200 px-4 py-2">Status</th>
+                </tr>
+            `;
+            table.appendChild(tableHeader);
+
+            const tableBody = document.createElement('tbody');
+            const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            daysOfWeek.forEach((day, index) => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-100';
+
+                // Calculate the date for each day of the week
+                const dayDate = new Date(weekStart);
+                dayDate.setDate(dayDate.getDate() + index);
+
+                row.innerHTML = `
+                    <td class="border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700">${day}</td>
+                    <td class="border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 flex items-center">
+                        <span class="status-indicator ${getStatusColor(day)}" title="${getStatusTooltip(day)}"></span>
+                        ${getStatusText(day)}
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            table.appendChild(tableBody);
+            wrapper.appendChild(table);
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'mt-4 flex space-x-2';
+
+            const approveBtn = document.createElement('button');
+            approveBtn.className = 'bg-green-500 text-white py-2 px-4 rounded-lg flex items-center hover:bg-green-600 transition-transform';
+            approveBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Approve';
+            buttonContainer.appendChild(approveBtn);
+
+            const rejectBtn = document.createElement('button');
+            rejectBtn.className = 'bg-red-500 text-white py-2 px-4 rounded-lg flex items-center hover:bg-red-600 transition-transform';
+            rejectBtn.innerHTML = '<i class="fas fa-times mr-2"></i> Reject';
+            buttonContainer.appendChild(rejectBtn);
+
+            const reasonContainer = document.createElement('div');
+            reasonContainer.className = 'mt-4 p-3 border border-gray-300 rounded-lg';
+
+            reasonContainer.innerHTML = `
+                <label for="reason" class="block text-sm font-medium mb-2">Reason for rejection:</label>
+                <textarea id="reason" rows="4" placeholder="Enter reason..." class="w-full p-2 border border-gray-300 rounded-lg text-sm"></textarea>
+            `;
+            reasonContainer.classList.add('mt-4');
+
+            wrapper.appendChild(buttonContainer);
+            wrapper.appendChild(reasonContainer);
+
+            return wrapper;
+        }
+
+        function getStatusColor(day) {
+            // Example color mapping for status (this can be customized)
+            const statusColors = {
+                'Monday': 'bg-green-400',
+                'Tuesday': 'bg-yellow-400',
+                'Wednesday': 'bg-red-400',
+                'Thursday': 'bg-blue-400',
+                'Friday': 'bg-purple-400',
+                'Saturday': 'bg-gray-400',
+                'Sunday': 'bg-orange-400',
+            };
+            return statusColors[day] || 'bg-gray-300';
+        }
+
+        function getStatusText(day) {
+            // Example text mapping for status (this can be customized)
+            const statusText = {
+                'Monday': 'Present',
+                'Tuesday': 'Absent',
+                'Wednesday': 'Comp Off',
+                'Thursday': 'Paid Holiday',
+                'Friday': 'Weekly Off',
+                'Saturday': 'Outdoor Working',
+                'Sunday': 'Outdoor Travelling',
+            };
+            return statusText[day] || 'Unknown';
+        }
+
+        function getStatusTooltip(day) {
+            // Example tooltip mapping for status (this can be customized)
+            const statusTooltips = {
+                'Monday': 'Employee present',
+                'Tuesday': 'Employee absent',
+                'Wednesday': 'Compensatory off',
+                'Thursday': 'Paid holiday',
+                'Friday': 'Weekly off',
+                'Saturday': 'Outdoor working',
+                'Sunday': 'Outdoor travelling',
+            };
+            return statusTooltips[day] || 'Unknown status';
+        }
+
+        function displayTimecards(employee) {
+            timecardContainer.innerHTML = '';
+            if (employee) {
+                const today = new Date();
+                const startOfWeek = getStartOfWeek(today);
+
+                for (let weekNumber = 1; weekNumber <= 4; weekNumber++) {
+                    const timecardElement = createTimecardElement(employee, new Date(startOfWeek));
+                    timecardContainer.appendChild(timecardElement);
+                    startOfWeek.setDate(startOfWeek.getDate() + 7); // Move to the next week
+                }
+            }
+        }
+
+        function displayEmployees() {
+            employeeList.innerHTML = '';
+            employees.forEach(employee => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `${employee.name} <i class="fas fa-user"></i>`;
+                listItem.dataset.id = employee.id;
+                listItem.className = 'p-2 mb-2 cursor-pointer rounded-lg hover:bg-gray-200 transition-transform';
+                listItem.addEventListener('click', () => {
+                    // Deselect all other employees
+                    employeeList.querySelectorAll('.bg-blue-500').forEach(item => {
+                        item.classList.remove('bg-blue-500');
+                        item.classList.add('bg-white');
+                        item.classList.remove('text-white');
+                        item.classList.add('text-black');
+                    });
+
+                    // Select the clicked employee
+                    listItem.classList.add('bg-blue-500', 'text-white');
+                    listItem.classList.remove('bg-white', 'text-black');
+                    const selectedEmployee = { id: listItem.dataset.id, name: listItem.innerText };
+                    displayTimecards(selectedEmployee);
+                });
+                employeeList.appendChild(listItem);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayEmployees();
+        });
+
+        // Search functionality
+        document.getElementById('employeeSearch').addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            employeeList.querySelectorAll('li').forEach(item => {
+                const name = item.innerText.toLowerCase();
+                item.style.display = name.includes(query) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+
+</html>
